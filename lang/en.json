@@ -1,0 +1,10 @@
+{
+    "suc_create" : "Addition completed successfully",
+    "suc_update" : "The modification was completed successfully",
+    "suc_delete" : "The deletion was completed successfully",
+    "suc_default" : "The previous operation completed successfully",
+    "password_error" : "The old password is incorrect",
+    "err_image_upload": "The previous image has not been successfully uploaded, please return the previous process again",
+    "err_file_upload": "The previous file has not been successfully uploaded, please return the previous process again",
+    "import_file_success" : "import file success ."
+}

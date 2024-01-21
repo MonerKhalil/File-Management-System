@@ -1,0 +1,6 @@
+<?php
+
+return
+[
+	'moner' => 'xxxxxxxxxxxxx',
+];

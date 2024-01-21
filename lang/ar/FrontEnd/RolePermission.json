@@ -1,0 +1,7 @@
+{
+    "users" : "مستخدمين" ,
+    "create_users" : "انشاء مستخدم" ,
+    "delete_users" : "حذف المستخدم",
+    "read_users" : "قراءة مستخدم",
+    "update_users" : "تحديث مستخدم"
+}

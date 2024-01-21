@@ -1,0 +1,288 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ rootNamespace }}Http\Controllers\Controller;
+use App\Http\Requests\{{ model }}Request;
+use App\Http\Repositories\Interfaces\I{{ model }}Repository;
+use App\Exceptions\MainException;
+use Illuminate\Http\Request;
+
+class {{ class }} extends Controller
+{
+    /**
+     * @var \App\Http\Repositories\Interfaces\I{{ model }}Repository
+     */
+    public $I{{ model }}Repository;
+
+    /**
+     * @var string
+     */
+    private $indexPage = '{{ model | lowercase }}.index';
+
+    /**
+     * @var string
+     */
+    private $indexView = 'pages.{{ model | lowercase }}.index';
+
+    /**
+     * @var string
+     */
+    private $createView = 'pages.{{ model | lowercase }}.create';
+
+    /**
+     * @var string
+     */
+    private $updateView = 'pages.{{ model | lowercase }}.update';
+
+    /**
+     * @param  \App\Http\Repositories\Interfaces\I{{ model }}Repository  $I{{ model }}Repository
+     */
+    public function __construct(I{{ model }}Repository $I{{ model }}Repository)
+    {
+        $this->I{{ model }}Repository = $I{{ model }}Repository;
+        $this->addMiddlewarePermissionsToFunctions($this->I{{ model }}Repository->nameTable);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function index()
+    {
+        try {
+            $data = $this->I{{ model }}Repository->get();
+
+            return $this->responseSuccess($this->indexView, compact("data"));
+
+        } catch (\Exception $e) {
+          throw new MainException($e->getMessage());
+        }
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return $this->responseSuccess($this->createView, null);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \{{ namespacedStoreRequest }}  $request
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function store({{ model }}Request $request)
+    {
+        try {
+           $result = $this->I{{ model }}Repository->create($request->validated());
+
+           return $this->responseSuccess(null, compact("result"), null, $this->indexPage);
+
+        } catch (\Exception $e) {
+          throw new MainException($e->getMessage());
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \{{ namespacedModel }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function show({{ model }} ${{ modelVariable }})
+    {
+        try {
+           $dataShow = $this->I{{ model }}Repository->find(${{ modelVariable }}->id);
+
+           return $this->responseSuccess($this->indexView, compact("dataShow"));
+
+        } catch (\Exception $e) {
+          throw new MainException($e->getMessage());
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \{{ namespacedModel }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     */
+    public function edit({{ model }} ${{ modelVariable }})
+    {
+        try {
+           $data = $this->I{{ model }}Repository->find(${{ modelVariable }}->id);
+
+           return $this->responseSuccess($this->updateView, compact("data"));
+
+        } catch (\Exception $e) {
+          throw new MainException($e->getMessage());
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \{{ namespacedUpdateRequest }}  $request
+     * @param  \{{ namespacedModel }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function update({{ model }}Request $request, {{ model }} ${{ modelVariable }})
+    {
+        try {
+           $result = $this->I{{ model }}Repository->update($request->validated() ,${{ modelVariable }}->id);
+
+           return $this->responseSuccess(null, compact("result"), null, $this->indexPage);
+
+        } catch (\Exception $e) {
+          throw new MainException($e->getMessage());
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \{{ namespacedModel }}  ${{ modelVariable }}
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function destroy({{ model }} ${{ modelVariable }})
+    {
+        try {
+           $result = $this->I{{ model }}Repository->delete(${{ modelVariable }}->id);
+
+           return $this->responseSuccess(null, null, null, $this->indexPage);
+
+        } catch (\Exception $e) {
+          throw new MainException($e->getMessage());
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param $id
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function forceDestroy($id)
+    {
+        try {
+           $result = $this->I{{ model }}Repository->forceDelete($id);
+
+           return $this->responseSuccess(null, null, null, $this->indexPage);
+
+        } catch (\Exception $e) {
+          throw new MainException($e->getMessage());
+        }
+    }
+
+    /**
+     * active multi ids Records Table.
+     *
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function active($id)
+    {
+       $result = $this->I{{ model }}Repository->active($id);
+
+       return $this->responseSuccess(null, null, null, $this->indexPage);
+    }
+
+    /**
+     * active multi ids Records Table.
+     *
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function activeRow($id)
+    {
+        $result = $this->I{{ model }}Repository->activeRow($id);
+
+        return $this->responseSuccess(null, null, null, $this->indexPage);
+    }
+
+    /**
+     * active multi ids Records Table.
+     *
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function deactivateRow($id)
+    {
+        $result = $this->I{{ model }}Repository->deactivateRow($id);
+
+        return $this->responseSuccess(null, null, null, $this->indexPage);
+    }
+
+    /**
+     * active multi ids Records Table.
+     *
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function activeMulti(Request $request)
+    {
+        $result = $this->I{{ model }}Repository->activeMulti($request);
+
+        return $this->responseSuccess(null, null, null, $this->indexPage);
+    }
+
+    /**
+     * export all Records Table Xlsx.
+     *
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function exportXLSX(Request $request)
+    {
+        return $this->I{{ model }}Repository->exportXLSX($request);
+    }
+
+    /**
+     * export all Records Table PDF.
+     *
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function exportPDF(Request $request)
+    {
+        return $this->I{{ model }}Repository->exportPDF($request);
+    }
+
+    /**
+     * import file Table.
+     *
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function import(Request $request)
+    {
+        $result = $this->I{{ model }}Repository->import($request);
+
+        return $this->responseSuccess(null, null, null, $this->indexPage);
+    }
+
+    /**
+     * delete multi ids Records Table.
+     *
+     * @return \Illuminate\Http\Response
+     * @author moner khalil
+     */
+    public function multiDestroy(Request $request){
+        $result = $this->I{{ model }}Repository->multiDestroy($request);
+
+        return $this->responseSuccess(null, null, null, $this->indexPage);
+    }
+}
