@@ -97,7 +97,7 @@ class User extends BaseTranslationModel implements AuthenticatableContract,Autho
             "id_file",
             "id",
             "id"
-        )->withTimestamps();
+        );
     }
 
     public function translation(){

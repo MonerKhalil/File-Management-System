@@ -8,6 +8,7 @@ use App\HelperClasses\MyApp;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\Interfaces\IGroupRepository;
 use App\Http\Repositories\Interfaces\IMediaManagerRepository;
+use App\Http\Requests\AddFileToMeRequest;
 use App\Http\Requests\MediaManagerRequest;
 use App\Http\Requests\ShareFilesToGroupRequest;
 use App\Models\Role;
@@ -58,8 +59,20 @@ class UFileController extends Controller
         return $this->responseSuccess(null,null,__(MessagesFlash::Messages("default")));
     }
 
-    public function addFilesToMe(){
-
+    public function addFilesToMe(AddFileToMeRequest $request){
+        $group = $this->IGroupRepository->find($request->group_id);
+        $group->canAccessGroup();
+        $files = $this->IMediaManagerRepository->queryModel()
+            ->whereHas("files_groups",function ($q)use($group,$request){
+                return $q->where("id_group",$group->id)->whereIn("id_file",$request->file_ids);
+            })
+            ->select("id")
+            ->get()->pluck("id");
+        if (sizeof($files) > 0){
+            $user = MyApp::Classes()->getUser();
+            $user->userFiles()->syncWithoutDetaching($files);
+        }
+        return $this->responseSuccess(null,null,__(MessagesFlash::Messages("default")));
     }
 
     /**
