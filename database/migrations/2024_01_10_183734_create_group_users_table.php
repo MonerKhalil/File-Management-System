@@ -23,7 +23,7 @@ return new class extends Migration
             $table->foreignId("id_group")->constrained("groups")->cascadeOnDelete();
             $table->boolean("is_request")->default(false);
             $table->enum("type_request", GroupUser::TYPE)->default("none");
-            $table->enum("status", GroupFile::STATUS)->default("approve");
+            $table->enum("status", GroupUser::STATUS)->default("approve");
             $table->boolean("is_active")->default(true);
             $table->foreignId("created_by")->nullable()->constrained("users")->cascadeOnDelete();
             $table->foreignId("updated_by")->nullable()->constrained("users")->cascadeOnDelete();

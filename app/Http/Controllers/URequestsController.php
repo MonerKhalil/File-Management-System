@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\MainException;
+use App\HelperClasses\MessagesFlash;
 use App\HelperClasses\MyApp;
 use App\Http\Repositories\Interfaces\IGroupRepository;
 use App\Http\Repositories\Interfaces\IGroupUserRepository;
 use App\Http\Repositories\Interfaces\IUserRepository;
+use App\Http\Requests\RChangeStatusGroupRequest;
+use App\Http\Requests\RChangeStatusUserRequest;
+use App\Http\Requests\SendInvitationToUserRequest;
 use App\Http\Requests\UJoinGroupPublicRequest;
 use App\Http\Requests\USendJoinGroupPrivateRequest;
+use App\Services\ChangeStatusRequestService;
+use Illuminate\Http\Request;
 
 class URequestsController extends Controller
 {
@@ -16,7 +22,6 @@ class URequestsController extends Controller
     private IGroupRepository $IGroupRepository;
     private IGroupUserRepository $IGroupUserRepository;
     private IUserRepository $IUserRepository;
-
 
     public function __construct(IGroupRepository $IGroupRepository,IGroupUserRepository $IGroupUserRepository){
         $this->user = MyApp::Classes()->getUser();
@@ -40,6 +45,27 @@ class URequestsController extends Controller
             return $q->with("user")->where("is_request",1)->where("type","request_user")->where("id_group",$id_group);
         });
         return $this->responseSuccess(null,compact("requests"));
+    }
+
+    public function changeStatusRequestUsersJoin(RChangeStatusUserRequest $request,$id_group,ChangeStatusRequestService $service){
+        $group = $this->IGroupRepository->find($id_group);
+        $group->canAccessGroup();
+        $query = $this->IGroupUserRepository->queryModelWithActive()
+            ->whereIn("id",$request->request_user_group_id)
+            ->where("id_group",$id_group);
+        $service->mainProcessChangeStatus($request,$query);
+        return $this->responseSuccess(null,null,__(MessagesFlash::Messages("default")));
+    }
+
+    public function sendRequestJoinToUsers(SendInvitationToUserRequest $request,$id_group){
+        $group = $this->IGroupRepository->find($id_group);
+        $group->canAccessGroup();
+        $group->users()->attach($request->user_ids,[
+            "is_request" => 0,
+            "type_request" => "request_group",
+            "status" => "pending",
+        ]);
+        return $this->responseSuccess(null,null,__(MessagesFlash::Messages("default")));
     }
 
     /**
@@ -84,6 +110,24 @@ class URequestsController extends Controller
             "id_group" => $request->id_group,
         ]);
         return $this->responseSuccess();
+    }
+
+    public function changeStatusRequestReceivedFromGroup(RChangeStatusGroupRequest $request,ChangeStatusRequestService $service){
+        $query = $this->IGroupUserRepository->queryModelWithActive()
+            ->where("is_request",1)
+            ->where("type","request_group")
+            ->where("id_user",$this->user->id)
+            ->whereIn("id",$request->request_user_group_id);
+        $service->mainProcessChangeStatus($request,$query);
+        return $this->responseSuccess(null,null,__(MessagesFlash::Messages("default")));
+    }
+
+    public function leaveGroup($id_group){
+        $this->IGroupUserRepository->queryModel()
+            ->where("id_user",$this->user->id)
+            ->where("id_group",$id_group)
+            ->forceDelete();
+        return $this->responseSuccess(null,null,__(MessagesFlash::Messages("default")));
     }
 
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\MediaManagerController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingControlController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\UFileController;
 use App\Http\Controllers\UGroupController;
 use App\Http\Controllers\URequestsController;
 use App\Http\Controllers\UserController;
@@ -21,8 +22,6 @@ Route::post("register",[AuthController::class,"register"]);
 Route::post("login",[AuthController::class,"login"]);
 Route::post('forgot-password', [PasswordResetForgetController::class, 'forgotPasswordSendEmail']);
 Route::post('reset-password', [PasswordResetForgetController::class, 'resetPassword']);
-
-Route::get("languages/all",[LanguageController::class,"getAllLanguges"]);
 
 Route::middleware(["userCheckAuth","throttle:31,1","xss",])->group(function (){
     Route::post('send/verify-email', [VerifyEmailController::class, 'sendEmailVerify']);
@@ -95,29 +94,23 @@ Route::middleware(["userCheckAuth","throttle:31,1","xss","isActive","isVerify"])
         Route::controller(URequestsController::class)->group(function (){
             //owner-group
             Route::get("show/all/requests/group/{id_group}/join","showRequestJoinGroup");
-            Route::post("request/join/change/status/{type}","");
-            Route::post("send/request/join/users","");
+            Route::post("request/join/change/status/group/{id_group}","changeStatusRequestUsersJoin");
+            Route::post("send/request/join/users/group/{id_group}","sendRequestJoinToUsers");
             //user
             Route::get("show/all/my/request-invitation/received","showRequestInvitationReceived");
             Route::post("send/request/join/group/private","sendRequestJoinToGroupPrivate");
             Route::post("join/group/public","joinToGroupPublic");
+            Route::post("requests-invitation/join/change/status","changeStatusRequestReceivedFromGroup");
             Route::delete("leave/group/{id_group}","leaveGroup");
-
-            Route::delete("destroy/request/{request}","");
         });
     });
 
-    Route::prefix("files")->group(function (){
-        Route::get("show/all",[]);
-        Route::get("show/can/share",[]);
-        Route::post("upload",[]);
-        Route::put("edit/name/{file}",[]);
-        Route::delete("file/{file}",[]);
-        Route::post("share/group/{id_group}",[]);
-        Route::post("add/file/to/user",[]);
-//        Route::get("download",function (Request $request){
-//            return MyApp::Classes()->storageFiles->downloadFile($request->path);
-//        });
+    Route::prefix("files")->controller(UFileController::class)->group(function (){
+        Route::get("show/all","showAllFiles");
+        Route::post("upload","uploadFile");
+        Route::post("share/group/{id_group}","shareFilesToGroup");
+        Route::post("add/file/to/me","addFilesToMe");
+        Route::get("download/file","downloadFile");
     });
 });
 

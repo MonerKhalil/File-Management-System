@@ -1,1 +1,1 @@
-{"user":"\\App\\Http\\Controllers\\UserController","language":"\\App\\Http\\Controllers\\LanguageController","social-media":"\\App\\Http\\Controllers\\SocialMediaController","file":"\\App\\Http\\Controllers\\FileController","group":"\\App\\Http\\Controllers\\GroupController"}
+{"user":"\\App\\Http\\Controllers\\UserController","language":"\\App\\Http\\Controllers\\LanguageController","group":"\\App\\Http\\Controllers\\GroupController"}

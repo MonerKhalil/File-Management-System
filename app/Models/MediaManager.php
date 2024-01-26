@@ -20,12 +20,23 @@ class MediaManager extends BaseModel
     public const NAME_FOLDER = "uploads";
 
     protected $fillable = [
-        "file_name","file_size","extension",
+        "user_id","file_name","file_size","extension",
         "object_name","pdf_path","type",
         "is_active","created_by","updated_by",
     ];
 
     // Add relationships between tables section
+    public function user(){
+        return $this->belongsTo(User::class,"user_id","id");
+    }
+
+    public function files_users(){
+        return $this->hasMany(UserFile::class,"id_file","id");
+    }
+
+    public function files_groups(){
+        return $this->hasMany(GroupFile::class,"id_file","id");
+    }
 
     /**
      * @description add validation in frontend
@@ -70,6 +81,7 @@ class MediaManager extends BaseModel
                 //validation rule any image $validator->imageRule(false)
                 //validation rule any word_name(only char and number) $validator->textRule(false)
                 "file" => $rules,
+                "name" => $validator->textRule(false),
             ];
         };
     }

@@ -42,7 +42,7 @@ class Group extends BaseModel
     }
 
     public function files(){
-        return $this->belongsToMany(File::class,"group_files",
+        return $this->belongsToMany(MediaManager::class,"group_files",
             "id_group",
             "id_file",
             "id",

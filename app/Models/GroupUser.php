@@ -13,6 +13,8 @@ class GroupUser extends Model
     use HasFactory;
 
     const TYPE = ["request_group","request_user","none"];
+    
+    const STATUS = ["pending","approve","reject"];
 
     protected $fillable = [
         "id_user","id_group","is_request","type_request","status",

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\MainException;
 use App\HelperClasses\MyApp;
-use App\Http\Repositories\Interfaces\IFileRepository;
 use App\Http\Repositories\Interfaces\IGroupRepository;
+use App\Http\Repositories\Interfaces\IMediaManagerRepository;
 use App\Http\Repositories\Interfaces\IUserRepository;
 use App\Http\Requests\UGroupRequest;
 
@@ -13,12 +13,12 @@ class UGroupController extends Controller
 {
     private $user;
     private IGroupRepository $IGroupRepository;
-    private IFileRepository $IFileRepository;
+    private IMediaManagerRepository $IFileRepository;
     private IUserRepository $IUserRepository;
 
 
     public function __construct(IGroupRepository $IGroupRepository,IUserRepository $IUserRepository,
-                                IFileRepository $IFileRepository){
+                                IMediaManagerRepository $IFileRepository){
         $this->user = MyApp::Classes()->getUser();
         $this->IGroupRepository = $IGroupRepository;
         $this->IFileRepository = $IFileRepository;
@@ -88,7 +88,7 @@ class UGroupController extends Controller
         $group = $this->IGroupRepository->find($id_group);
         $group->canAccessGroup();
         $files = $this->IFileRepository->get(false,function ($q)use($id_group){
-            return $q->whereHas("pivot_groups",function ($q)use($id_group){
+            return $q->whereHas("files_groups",function ($q)use($id_group){
                 return $q->where("id_group",$id_group);
             });
         });

@@ -13,7 +13,7 @@ class UserFile extends Model
     use HasFactory;
 
     protected $fillable = [
-        "id_user","id_file",
+        "id_user" ,"id_file",
         "is_active","created_by","updated_by","notes",
     ];
 }

@@ -12,10 +12,8 @@ class GroupFile extends Model
 {
     use HasFactory;
 
-    const STATUS = ["pending","approve","reject"];
-
     protected $fillable = [
-        "id_group" ,"id_file","status","can_share_with_user",
+        "id_group" ,"id_file",
         "is_active","created_by","updated_by","notes",
     ];
 }

@@ -75,26 +75,26 @@ class User extends BaseTranslationModel implements AuthenticatableContract,Autho
     }
 
     public function Myfiles(){
-        return $this->hasMany(File::class,"id_user","id");
+        return $this->hasMany(MediaManager::class,"id_user","id");
     }
 
     public function Mygroups(){
         return $this->hasMany(Group::class,"id_user","id");
     }
 
-    public function filesBookings(){
-        return $this->belongsToMany(File::class,"user_files",
+    public function userGroups(){
+        return $this->belongsToMany(Group::class,"group_users",
             "id_user",
-            "id_file",
+            "id_group",
             "id",
             "id"
         )->withTimestamps();
     }
 
-    public function userGroups(){
-        return $this->belongsToMany(Group::class,"group_users",
+    public function userFiles(){
+        return $this->belongsToMany(MediaManager::class,"user_files",
             "id_user",
-            "id_group",
+            "id_file",
             "id",
             "id"
         )->withTimestamps();

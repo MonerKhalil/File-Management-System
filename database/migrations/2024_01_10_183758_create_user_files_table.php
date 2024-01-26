@@ -18,7 +18,7 @@ return new class extends Migration
             //column any file ( type : text ) ( name : Like %pdf% )...
             $table->id();
             $table->foreignId("id_user")->constrained("users")->cascadeOnDelete();
-            $table->foreignId("id_file")->constrained("files")->cascadeOnDelete();
+            $table->foreignId("id_file")->constrained("media_managers")->cascadeOnDelete();
             $table->boolean("is_active")->default(true);
             $table->foreignId("created_by")->nullable()->constrained("users")->cascadeOnDelete();
             $table->foreignId("updated_by")->nullable()->constrained("users")->cascadeOnDelete();

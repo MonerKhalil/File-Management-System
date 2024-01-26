@@ -17,6 +17,7 @@ return new class extends Migration
             //column any image ( type : text ) ( name : Like %png% )...
             //column any file ( type : text ) ( name : Like %pdf% )...
             $table->id();
+            $table->foreignId("user_id")->constrained("users")->cascadeOnDelete();
             $table->string('file_name')->nullable();
             $table->bigInteger('file_size')->nullable();
             $table->string('pdf_path')->nullable();
